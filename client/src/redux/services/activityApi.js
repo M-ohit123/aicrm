@@ -1,4 +1,3 @@
-
 import {
   createApi,
   fetchBaseQuery,
@@ -8,26 +7,35 @@ export const activityApi = createApi({
   reducerPath: "activityApi",
 
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api",
+    baseUrl: "https://aicrm-jj5n.onrender.com/api",
+
+    prepareHeaders: (headers) => {
+      if (typeof window !== "undefined") {
+        const token = localStorage.getItem("crmToken");
+
+        if (token) {
+          headers.set(
+            "Authorization",
+            `Bearer ${token}`
+          );
+        }
+      }
+
+      headers.set("Content-Type", "application/json");
+
+      return headers;
+    },
   }),
 
   tagTypes: ["Activity"],
 
   endpoints: (builder) => ({
-
-    // =====================================
     // GET ALL ACTIVITIES OF LEAD
-    // =====================================
-
     getLeadActivities: builder.query({
       query: (leadId) =>
         `/activities/lead/${leadId}`,
 
-      providesTags: (
-        result,
-        error,
-        leadId
-      ) => [
+      providesTags: (result, error, leadId) => [
         {
           type: "Activity",
           id: leadId,
@@ -35,19 +43,12 @@ export const activityApi = createApi({
       ],
     }),
 
-    // =====================================
     // GET SINGLE ACTIVITY
-    // =====================================
-
     getActivityById: builder.query({
       query: (id) =>
         `/activities/${id}`,
 
-      providesTags: (
-        result,
-        error,
-        id
-      ) => [
+      providesTags: (result, error, id) => [
         {
           type: "Activity",
           id,
@@ -55,10 +56,7 @@ export const activityApi = createApi({
       ],
     }),
 
-    // =====================================
     // CREATE ACTIVITY
-    // =====================================
-
     createActivity: builder.mutation({
       query: (activity) => ({
         url: "/activities",
@@ -66,11 +64,7 @@ export const activityApi = createApi({
         body: activity,
       }),
 
-      invalidatesTags: (
-        result,
-        error,
-        activity
-      ) => [
+      invalidatesTags: (result, error, activity) => [
         {
           type: "Activity",
           id: activity?.lead,
@@ -78,49 +72,33 @@ export const activityApi = createApi({
       ],
     }),
 
-    // =====================================
     // UPDATE ACTIVITY
-    // =====================================
+    updateActivity: builder.mutation({
+      query: ({ id, ...activity }) => ({
+        url: `/activities/${id}`,
+        method: "PUT",
+        body: activity,
+      }),
 
-   updateActivity: builder.mutation({
-  query: ({ id, ...activity }) => ({
-    url: `/activities/${id}`,
-    method: "PUT",
-    body: activity,
-  }),
+      invalidatesTags: (result, error, activity) => [
+        {
+          type: "Activity",
+          id: activity?.lead,
+        },
+      ],
+    }),
 
-  invalidatesTags: (
-    result,
-    error,
-    activity
-  ) => [
-    {
-      type: "Activity",
-      id: activity?.lead,
-    },
-  ],
-}),
-
-    // =====================================
     // DELETE ACTIVITY
-    // =====================================
-
     deleteActivity: builder.mutation({
       query: (id) => ({
         url: `/activities/${id}`,
         method: "DELETE",
       }),
 
-      invalidatesTags: [
-        "Activity",
-      ],
+      invalidatesTags: ["Activity"],
     }),
   }),
 });
-
-// =====================================
-// EXPORT HOOKS
-// =====================================
 
 export const {
   useGetLeadActivitiesQuery,

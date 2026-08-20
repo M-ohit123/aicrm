@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -39,7 +38,7 @@ export default function LoginPage() {
       setIsLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/auth/login",
+        "https://aicrm-jj5n.onrender.com/api/auth/login",
         {
           method: "POST",
           headers: {
@@ -84,13 +83,10 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-
       <div className="w-full max-w-md rounded-2xl border bg-white p-8 shadow-sm">
 
         {/* Logo */}
-
         <div className="text-center">
-
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-900 text-2xl">
             🚀
           </div>
@@ -102,11 +98,9 @@ export default function LoginPage() {
           <p className="mt-2 text-sm text-gray-500">
             Login to your CRM account
           </p>
-
         </div>
 
         {/* Error */}
-
         {error && (
           <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-3">
             <p className="text-sm text-red-600">
@@ -116,14 +110,12 @@ export default function LoginPage() {
         )}
 
         {/* Login Form */}
-
         <form
           onSubmit={handleSubmit}
           className="mt-6 space-y-5"
         >
 
           {/* Email */}
-
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">
               Email
@@ -142,7 +134,6 @@ export default function LoginPage() {
           </div>
 
           {/* Password */}
-
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">
               Password
@@ -161,23 +152,17 @@ export default function LoginPage() {
           </div>
 
           {/* Login Button */}
-
           <button
             type="submit"
             disabled={isLoading}
             className="w-full rounded-lg bg-gray-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isLoading
-              ? "Logging in..."
-              : "Login"}
+            {isLoading ? "Logging in..." : "Login"}
           </button>
-
         </form>
 
         {/* Register */}
-
         <div className="mt-6 text-center">
-
           <p className="text-sm text-gray-500">
             Don't have an account?{" "}
 
@@ -188,17 +173,14 @@ export default function LoginPage() {
               Register
             </Link>
           </p>
-
         </div>
 
         {/* Footer */}
-
         <p className="mt-4 text-center text-xs text-gray-400">
           CRM Management System
         </p>
 
       </div>
-
     </div>
   );
 }

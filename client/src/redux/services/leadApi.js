@@ -4,10 +4,9 @@ import {
 } from "@reduxjs/toolkit/query/react";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000/api",
+  baseUrl: "https://aicrm-jj5n.onrender.com/api",
 
   prepareHeaders: (headers) => {
-    // Browser me localStorage available hai
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("crmToken");
 
@@ -19,7 +18,10 @@ const baseQuery = fetchBaseQuery({
       }
     }
 
-    headers.set("Content-Type", "application/json");
+    headers.set(
+      "Content-Type",
+      "application/json"
+    );
 
     return headers;
   },
