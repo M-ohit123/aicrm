@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -36,8 +35,8 @@ export default function RegisterPage() {
 
     // Validation
     if (
-      !formData.name ||
-      !formData.email ||
+      !formData.name.trim() ||
+      !formData.email.trim() ||
       !formData.password ||
       !formData.confirmPassword
     ) {
@@ -46,16 +45,11 @@ export default function RegisterPage() {
     }
 
     if (formData.password.length < 6) {
-      setError(
-        "Password must be at least 6 characters."
-      );
+      setError("Password must be at least 6 characters.");
       return;
     }
 
-    if (
-      formData.password !==
-      formData.confirmPassword
-    ) {
+    if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
@@ -64,26 +58,31 @@ export default function RegisterPage() {
       setIsLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/auth/register",
+        "https://aicrm-jj5n.onrender.com/api/auth/register",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
+            name: formData.name.trim(),
+            email: formData.email.trim(),
             password: formData.password,
           }),
         }
       );
 
-      const data = await response.json();
+      let data = {};
+
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
 
       if (!response.ok) {
         throw new Error(
-          data?.message ||
-            "Failed to register user"
+          data?.message || "Failed to register user"
         );
       }
 
@@ -99,20 +98,22 @@ export default function RegisterPage() {
         confirmPassword: "",
       });
 
-      // Login page par bhejo
+      // Login page par redirect
       setTimeout(() => {
         router.push("/login");
       }, 1500);
     } catch (error) {
-      console.error(
-        "REGISTER ERROR:",
-        error
-      );
+      console.error("REGISTER ERROR:", error);
 
-      setError(
-        error.message ||
-          "Something went wrong"
-      );
+      if (error instanceof TypeError) {
+        setError(
+          "Unable to connect to server. Please check your internet connection or try again."
+        );
+      } else {
+        setError(
+          error.message || "Something went wrong"
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -120,13 +121,10 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-
       <div className="w-full max-w-md rounded-2xl border bg-white p-8 shadow-sm">
 
         {/* Logo */}
-
         <div className="text-center">
-
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-900 text-2xl">
             🚀
           </div>
@@ -138,11 +136,9 @@ export default function RegisterPage() {
           <p className="mt-2 text-sm text-gray-500">
             Register for your CRM account
           </p>
-
         </div>
 
         {/* Error */}
-
         {error && (
           <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-3">
             <p className="text-sm text-red-600">
@@ -152,7 +148,6 @@ export default function RegisterPage() {
         )}
 
         {/* Success */}
-
         {success && (
           <div className="mt-6 rounded-lg border border-green-200 bg-green-50 p-3">
             <p className="text-sm text-green-600">
@@ -162,14 +157,12 @@ export default function RegisterPage() {
         )}
 
         {/* Form */}
-
         <form
           onSubmit={handleSubmit}
           className="mt-6 space-y-5"
         >
 
           {/* Name */}
-
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">
               Full Name
@@ -188,7 +181,6 @@ export default function RegisterPage() {
           </div>
 
           {/* Email */}
-
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">
               Email
@@ -207,7 +199,6 @@ export default function RegisterPage() {
           </div>
 
           {/* Password */}
-
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">
               Password
@@ -226,7 +217,6 @@ export default function RegisterPage() {
           </div>
 
           {/* Confirm Password */}
-
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">
               Confirm Password
@@ -245,7 +235,6 @@ export default function RegisterPage() {
           </div>
 
           {/* Register Button */}
-
           <button
             type="submit"
             disabled={isLoading}
@@ -255,13 +244,10 @@ export default function RegisterPage() {
               ? "Creating Account..."
               : "Create Account"}
           </button>
-
         </form>
 
         {/* Login Link */}
-
         <div className="mt-6 text-center">
-
           <p className="text-sm text-gray-500">
             Already have an account?{" "}
 
@@ -272,17 +258,14 @@ export default function RegisterPage() {
               Login
             </Link>
           </p>
-
         </div>
 
         {/* Footer */}
-
         <p className="mt-4 text-center text-xs text-gray-400">
           CRM Management System
         </p>
 
       </div>
-
     </div>
   );
 }
